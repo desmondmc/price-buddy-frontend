@@ -8,6 +8,8 @@ class MainInput extends Component {
         <span class="input-group-btn">
           <button class="btn btn-secondary" type="button" onClick={this.props.onSubmit}>Go!</button>
         </span>
+        {this.props.error && <div>There's an error</div>}
+        {this.props.error ? <div>No error</div> : <div>There's an error</div>}
       </div>
     );
   }
