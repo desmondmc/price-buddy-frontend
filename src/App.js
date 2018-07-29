@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
+import MainInput from './components/MainInput';
 
 class App extends Component {
-  submitLink() {
-    console.log('called!')
+  onSubmit() {
+    console.log('Submitted');
   }
 
   render() {
@@ -11,12 +12,7 @@ class App extends Component {
       <div class="container">
         <div class="row justify-content-center"></div>
         <div class="row justify-content-center">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." id="main-input" aria-label="Search for..." />
-            <span class="input-group-btn">
-              <button class="btn btn-secondary" type="button" onClick={this.submitLink}>Go!</button>
-            </span>
-          </div>
+          <MainInput onSubmit={this.onSubmit} />
         </div>
         <div class="row justify-content-center"></div>
         <div class="row justify-content-center"></div>
