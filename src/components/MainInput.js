@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
+import { AppContext } from '../Provider'
 
 class MainInput extends Component {
   render() {
     return (
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search for..." id="main-input" aria-label="Search for..." />
-        <span class="input-group-btn">
-          <button class="btn btn-secondary" type="button" onClick={this.props.onSubmit}>Go!</button>
-        </span>
-        {this.props.error && <div>There's an error</div>}
-        {this.props.error ? <div>No error</div> : <div>There's an error</div>}
-      </div>
+      <AppContext.Consumer>
+        {context => (
+          <div className="input-group">
+            <input type="text" className="form-control" placeholder="Search for..." id="main-input" aria-label="Search for..." />
+            <span className="input-group-btn">
+              <button className="btn btn-secondary" type="button" onClick={this.props.onSubmit}>Go!</button>
+            </span>
+            {context.state.token ? <div>I am logged in</div> : <div>I am not logged in</div>}
+          </div>
+        )}
+      </AppContext.Consumer>
     );
   }
 }
