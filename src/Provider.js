@@ -8,15 +8,15 @@ export default class Provider extends Component {
     super(props)
 
     this.state = {
-      initialLink: null,
+      onboardingLink: null,
       email: null,
       token: getCookie('token'),
     }
   }
 
-  setInitialLink = (link) => {
+  setOnboardingLink = (link) => {
     this.setState({
-      initialLink: link,
+      onboardingLink: link,
     })
   }
 
@@ -31,7 +31,7 @@ export default class Provider extends Component {
       <AppContext.Provider value={{
         state: this.state,
         setAuthToken: this.setAuthToken,
-        setInitialLink: this.setInitialLink,
+        setOnboardingLink: this.setOnboardingLink,
       }}>
         {this.props.children}
       </AppContext.Provider>
