@@ -17,16 +17,31 @@ class App extends Component {
     context.setAuthToken(token)
   }
 
+  messageFromContext = context => {
+    const {
+      initialLink,
+      email,
+    } = context.state;
+    
+    if (initialLink === null) {
+      return 'Please give us a link';
+    } else  if (initialLink && !email) {
+      return 'Give us your email and we will let you know stuff';
+    }
+
+    return 'Hmm something is wrong';
+  }
+
   render() {
     return (
       <AppContext.Consumer>
         {(context) => (
           <div className="container">
             <div className="row justify-content-center">
-              <MainMessage />
+              {context.email !== null && <MainMessage message={this.messageFromContext(context)} />}
             </div>
             <div className="row justify-content-center">
-              <MainInput onSubmit={() => this.login(context)} error={'Everything is broken'} />
+              <MainInput onSubmit={() => context.setInitialLink('something')} error={'Everything is broken'} />
             </div>
             <div className="row justify-content-center"></div>
             <div className="row justify-content-center"></div>

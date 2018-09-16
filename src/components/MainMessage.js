@@ -5,7 +5,7 @@ class MainMessage extends Component {
   render() {
     return (
       <div className="main_message">
-         <TypeWriter typing={1}>Hello World!</TypeWriter>
+         <TypeWriter typing={1}>{this.props.message}</TypeWriter>
       </div>
     );
   }
