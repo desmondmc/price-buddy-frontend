@@ -10,12 +10,15 @@ class App extends Component {
   constructor(props) {
     super(props)
 
+    this.mainMessage = React.createRef()
+
     // Reasoning about this like it's just the onboarding component
     this.state = {
       link: null,
       email: null,
       password: null,
       acceptedPrivacy: false,
+      isError: false,
     }
   }
 
@@ -36,17 +39,35 @@ class App extends Component {
     } = this.state;
     
     if (link === null) {
-      return 'Please give us a link';
+      return 'Please give us a link'
     } else  if (link && !email) {
-      return 'Give us your email and we will let you know stuff';
+      return 'Give us your email and we will let you know stuff'
     } else if (link && email) {
-      return 'Great! Now give us your password';
+      return 'Great! Now give us your password'
+    }
+
+    return 'Hmm something is wrong';
+  }
+
+  errorMessage = () => {
+    const {
+      link,
+      email,
+    } = this.state;
+    
+    if (link === null) {
+      return 'Oops, there is something wrong with that link'
+    } else  if (link && !email) {
+      return 'Oops, please enter a valid email address'
+    } else if (link && email) {
+      return 'Password must be longer than 4 characters'
     }
 
     return 'Hmm something is wrong';
   }
 
   submitFunction = newValue => {
+    this.mainMessage.current.clear()
     const {
       link,
       email,
@@ -68,7 +89,7 @@ class App extends Component {
           <div className="container">
             <div className="price_buddy_main_container">
               <div className="row justify-content-center">
-                <MainMessage message={this.message()} isError={true} />
+                <MainMessage ref={this.mainMessage} message={this.message()} isError={this.state.isError} />
               </div>
               <div className="row justify-content-center">
                 <MainInput onSubmit={this.submitFunction} error={'Everything is broken'} />
