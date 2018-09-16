@@ -16,13 +16,12 @@ class App extends Component {
 
     this.mainMessage = React.createRef()
 
-    // Reasoning about this like it's just the onboarding component
     this.state = {
       link: null,
       email: null,
       password: null,
       acceptedPrivacy: false,
-      isError: false,
+      errorMessage: null,
     }
   }
 
@@ -37,54 +36,64 @@ class App extends Component {
   }
 
   message = () => {
-    const {
-      link,
-      email,
-    } = this.state;
-    
-    if (link === null) {
-      return 'Please give us a link'
-    } else  if (link && !email) {
-      return 'Give us your email and we will let you know stuff'
-    } else if (link && email) {
-      return 'Great! Now give us your password'
+    const flowStateMessageMap = {
+      GET_LINK: 'Please give us a link',
+      GET_EMAIL: 'Give us your email and we will let you know stuff',
+      GET_PASSWORD: 'Great! Now give us your password',
+      UNKNOWN_ERROR: 'Hmm something is wrong'
     }
 
-    return 'Hmm something is wrong';
-  }
-
-  errorMessage = () => {
-    const {
-      link,
-      email,
-    } = this.state;
-    
-    if (link === null) {
-      return 'Oops, there is something wrong with that link'
-    } else  if (link && !email) {
-      return 'Oops, please enter a valid email address'
-    } else if (link && email) {
-      return 'Password must be longer than 4 characters'
-    }
-
-    return 'Hmm something is wrong';
+    return flowStateMessageMap[this.getFlowPosition()];
   }
 
   submitFunction = newValue => {
     this.mainMessage.current.clear()
+
+    const flowStateMessageMap = {
+      GET_LINK: () => this.setState({ link: newValue }),
+      GET_EMAIL: () => this.validateAndSetEmail(newValue),
+      GET_PASSWORD: () => this.validateAndSetPassword(newValue),
+      UNKNOWN_ERROR: () => {},
+    }
+
+    return flowStateMessageMap[this.getFlowPosition()]();
+
+  };
+
+  validateAndSetEmail = (email) => {
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (emailRegex.test(email)) {
+      this.setState({ email, errorMessage: null })
+    } else {
+      this.setState({ errorMessage: 'Oops, please enter a valid email address' })
+    }
+  }
+
+  validateAndSetPassword = (password) => {
+    if (password.length < 8) {
+      this.setState({ errorMessage: 'Password must be at least 8 charaters' })
+    } else {
+      this.setState({ password: password, errorMessage: null })
+    }
+  }
+
+  getFlowPosition = () => {
     const {
       link,
       email,
-    } = this.state
+      errorMessage,
+    } = this.state;
 
     if (link === null) {
-      this.setState({ link: newValue })
-    } else  if (link && !email) {
-      this.setState({ email: newValue })
+      return 'GET_LINK'
+    } else if (link && !email) {
+      return 'GET_EMAIL'
     } else if (link && email) {
-      this.setState({ password: newValue })
+      return 'GET_PASSWORD'
     }
-  };
+
+    return 'UNKNOWN_ERROR';
+  }
 
   render() {
     return (
@@ -93,7 +102,11 @@ class App extends Component {
           <div className="container">
             <div className="price_buddy_main_container">
               <div className="row justify-content-center">
-                <MainMessage ref={this.mainMessage} message={this.message()} isError={this.state.isError} />
+                <MainMessage
+                  ref={this.mainMessage}
+                  message={this.state.errorMessage || this.message()}
+                  isError={!!this.state.errorMessage}  
+                />
               </div>
               <div className="row justify-content-center">
                 <MainInput onSubmit={this.submitFunction} error={'Everything is broken'} />
