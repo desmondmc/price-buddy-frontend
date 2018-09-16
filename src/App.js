@@ -19,18 +19,33 @@ class App extends Component {
 
   messageFromContext = context => {
     const {
-      initialLink,
+      onboardingLink,
       email,
     } = context.state;
     
-    if (initialLink === null) {
+    if (onboardingLink === null) {
       return 'Please give us a link';
-    } else  if (initialLink && !email) {
+    } else  if (onboardingLink && !email) {
       return 'Give us your email and we will let you know stuff';
     }
 
     return 'Hmm something is wrong';
   }
+
+  submitFunctionFromContext = context => {
+    const {
+      onboardingLink,
+      email,
+    } = context.state;
+
+    if (onboardingLink === null) {
+      return context.setOnboardingLink;
+    } else  if (onboardingLink && !email) {
+      return 'Give us your email and we will let you know stuff';
+    }
+
+    return () => {};
+  };
 
   render() {
     return (
@@ -41,7 +56,7 @@ class App extends Component {
               {context.email !== null && <MainMessage message={this.messageFromContext(context)} />}
             </div>
             <div className="row justify-content-center">
-              <MainInput onSubmit={() => context.setInitialLink('something')} error={'Everything is broken'} />
+              <MainInput onSubmit={context.setOnboardingLink} error={'Everything is broken'} />
             </div>
             <div className="row justify-content-center"></div>
             <div className="row justify-content-center"></div>
