@@ -7,6 +7,18 @@ import { AppContext } from './Provider';
 import { setCookie } from './utils/cookie';
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    // Reasoning about this like it's just the onboarding component
+    this.state = {
+      link: null,
+      email: null,
+      password: null,
+      acceptedPrivacy: false,
+    }
+  }
+
   login = async context => {
     const token = await API.login({
       email: 'desmond@asd.asd',
@@ -17,34 +29,36 @@ class App extends Component {
     context.setAuthToken(token)
   }
 
-  messageFromContext = context => {
+  message = () => {
     const {
-      onboardingLink,
+      link,
       email,
-    } = context.state;
+    } = this.state;
     
-    if (onboardingLink === null) {
+    if (link === null) {
       return 'Please give us a link';
-    } else  if (onboardingLink && !email) {
+    } else  if (link && !email) {
       return 'Give us your email and we will let you know stuff';
+    } else if (link && email) {
+      return 'Great! Now give us your password';
     }
 
     return 'Hmm something is wrong';
   }
 
-  submitFunctionFromContext = context => {
+  submitFunction = newValue => {
     const {
-      onboardingLink,
+      link,
       email,
-    } = context.state;
+    } = this.state
 
-    if (onboardingLink === null) {
-      return context.setOnboardingLink;
-    } else  if (onboardingLink && !email) {
-      return 'Give us your email and we will let you know stuff';
+    if (link === null) {
+      this.setState({ link: newValue })
+    } else  if (link && !email) {
+      this.setState({ email: newValue })
+    } else if (link && email) {
+      this.setState({ password: newValue })
     }
-
-    return () => {};
   };
 
   render() {
@@ -53,10 +67,10 @@ class App extends Component {
         {(context) => (
           <div className="container">
             <div className="row justify-content-center">
-              {context.email !== null && <MainMessage message={this.messageFromContext(context)} />}
+              <MainMessage message={this.message()} isError={true} />
             </div>
             <div className="row justify-content-center">
-              <MainInput onSubmit={context.setOnboardingLink} error={'Everything is broken'} />
+              <MainInput onSubmit={this.submitFunction} error={'Everything is broken'} />
             </div>
             <div className="row justify-content-center"></div>
             <div className="row justify-content-center"></div>
