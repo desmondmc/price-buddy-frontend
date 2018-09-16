@@ -37,14 +37,16 @@ class App extends Component {
       <AppContext.Consumer>
         {(context) => (
           <div className="container">
-            <div className="row justify-content-center">
-              {context.email !== null && <MainMessage message={this.messageFromContext(context)} />}
+            <div className="price_buddy_main_container">
+              <div className="row justify-content-center">
+                {context.email !== null && <MainMessage message={this.messageFromContext(context)} />}
+              </div>
+              <div className="row justify-content-center">
+                <MainInput onSubmit={() => context.setInitialLink('something')} error={'Everything is broken'} />
+              </div>
+              <div className="row justify-content-center"></div>
+              <div className="row justify-content-center"></div>
             </div>
-            <div className="row justify-content-center">
-              <MainInput onSubmit={() => context.setInitialLink('something')} error={'Everything is broken'} />
-            </div>
-            <div className="row justify-content-center"></div>
-            <div className="row justify-content-center"></div>
           </div>
         )}
       </AppContext.Consumer>

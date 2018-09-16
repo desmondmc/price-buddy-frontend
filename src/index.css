@@ -1,5 +1,14 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: arial,sans-serif;
 }
+
+.price_buddy_main_container{
+  margin-top: 100px;
+}
+
+.main_massage{
+  
+}
+
