@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import MainMessage from './components/MainMessage';
 import MainInput from './components/MainInput';
+import MainPrivacy from './components/MainPrivacy';
 import * as API from './utils/API';
 import { AppContext } from './Provider';
 import { setCookie } from './utils/cookie';
@@ -20,7 +21,7 @@ class App extends Component {
       link: null,
       email: null,
       password: null,
-      acceptedPrivacy: true,
+      acceptedPrivacy: false,
       errorMessage: null,
     }
   }
@@ -47,6 +48,7 @@ class App extends Component {
       GET_LINK: 'Please give us a link',
       GET_EMAIL: 'Give us your email and we will let you know stuff',
       GET_PASSWORD: 'Great! Now give us your password',
+      GET_PRIVACY_POLICY: 'Please read and accept the privacy policy',
       UNKNOWN_ERROR: 'Hmm something is wrong'
     }
 
@@ -59,7 +61,8 @@ class App extends Component {
     const flowStateMessageMap = {
       GET_LINK: () => this.setState({ link: newValue }),
       GET_EMAIL: () => this.validateAndSetEmail(newValue),
-      GET_PASSWORD: () => this.validatePasswordAndSignup(newValue, context),
+      GET_PASSWORD: () => this.validatePassword(newValue, context),
+      GET_PRIVACY_POLICY: () => this.signup(context),
       UNKNOWN_ERROR: () => {},
     }
 
@@ -83,13 +86,11 @@ class App extends Component {
     }
   }
 
-  validatePasswordAndSignup = (password, context) => {
+  validatePassword = (password, context) => {
     if (password.length < 6) {
       this.setState({ errorMessage: 'Password must be at least 6 charaters' })
     } else {
-      this.setState({ password: password, errorMessage: null }, () => {
-        this.signup(context)
-      })
+      this.setState({ password: password, errorMessage: null })
     }
   }
 
@@ -97,14 +98,18 @@ class App extends Component {
     const {
       link,
       email,
+      password,
+      acceptedPrivacy,
     } = this.state;
 
     if (link === null) {
       return 'GET_LINK'
     } else if (link && !email) {
       return 'GET_EMAIL'
-    } else if (link && email) {
+    } else if (link && email && !password) {
       return 'GET_PASSWORD'
+    } else if (link && email && password && !acceptedPrivacy){
+      return 'GET_PRIVACY_POLICY'
     }
 
     return 'UNKNOWN_ERROR';
@@ -112,7 +117,8 @@ class App extends Component {
 
   render() {
     const message = this.state.errorMessage || this.message();
-
+    console.log("###:",this.state)
+    console.log("###:",this.getFlowPosition())
     return (
       <AppContext.Consumer>
         {(context) => (
@@ -126,9 +132,11 @@ class App extends Component {
                 />
               </div>
               <div className="row justify-content-center">
-                <MainInput onSubmit={(value) => this.submitFunction(context, value)} error={'Everything is broken'} />
+                {this.getFlowPosition() !== 'GET_PRIVACY_POLICY' && <MainInput onSubmit={(value) => this.submitFunction(context, value)} error={'Everything is broken'} />}
               </div>
-              <div className="row justify-content-center"></div>
+              <div className="row justify-content-center">
+              {this.getFlowPosition() == 'GET_PRIVACY_POLICY' && <MainPrivacy onAccept={() => this.submitFunction(context)}/>}
+              </div>
             </div>
           </div>
         )}
