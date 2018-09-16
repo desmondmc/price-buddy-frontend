@@ -12,7 +12,9 @@ body {
 .main_message{
   font-family: 'Roboto Slab', serif;
   font-size: 25px;
+  max-width: 584px;
   min-height: 50px;
+  text-align: center;
   padding-bottom: 10px;
 }
 
@@ -20,7 +22,20 @@ body {
   color: red;
 }
 
-#main-input{
-
+.main_input{
+  max-width: 584px;
+  margin: 0 auto;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
 }
 
+.main_input input{
+  border-radius: 0px;
+}
+
+.main_input_submit{
+  border-radius: 0px;
+}
+
+.main_input_submit:hover{
+  cursor: pointer;
+}

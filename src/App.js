@@ -5,6 +5,10 @@ import MainInput from './components/MainInput';
 import * as API from './utils/API';
 import { AppContext } from './Provider';
 import { setCookie } from './utils/cookie';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+library.add(faPaperPlane)
 
 class App extends Component {
   constructor(props) {
