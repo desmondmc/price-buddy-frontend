@@ -16,19 +16,26 @@ class App extends Component {
       link: null,
       email: null,
       password: null,
-      acceptedPrivacy: false,
+      acceptedPrivacy: true,
       errorMessage: null,
     }
   }
 
-  login = async context => {
-    const token = await API.login({
-      email: 'desmond@asd.asd',
-      password: 'asdasd',
+  signup = async (context) => {
+    const { auth_token } = await API.signup({
+      email: this.state.email,
+      password: this.state.password,
     });
 
-    setCookie('token', token, 10)
-    context.setAuthToken(token)
+    if (!auth_token) {
+      this.setState({ errorMessage: 'Something went wrong, please try again'});
+      return;
+    }
+
+    if (auth_token) {
+      setCookie('token', auth_token, 10)
+      context.setAuthToken(auth_token)
+    }
   }
 
   message = () => {
@@ -42,13 +49,13 @@ class App extends Component {
     return flowStateMessageMap[this.getFlowPosition()];
   }
 
-  submitFunction = newValue => {
+  submitFunction = (context, newValue) => {
     this.mainMessage.current.clear()
 
     const flowStateMessageMap = {
       GET_LINK: () => this.setState({ link: newValue }),
       GET_EMAIL: () => this.validateAndSetEmail(newValue),
-      GET_PASSWORD: () => this.validateAndSetPassword(newValue),
+      GET_PASSWORD: () => this.validatePasswordAndSignup(newValue, context),
       UNKNOWN_ERROR: () => {},
     }
 
@@ -56,20 +63,29 @@ class App extends Component {
 
   };
 
-  validateAndSetEmail = (email) => {
+  validateAndSetEmail = async (email) => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (emailRegex.test(email)) {
+      const { is_available } = await API.emailAvailable(email);
+  
+      if (!is_available) {
+        this.setState({ errorMessage: 'Ooops looks like that email already exists'});
+        return;
+      }
+
       this.setState({ email, errorMessage: null })
     } else {
       this.setState({ errorMessage: 'Oops, please enter a valid email address' })
     }
   }
 
-  validateAndSetPassword = (password) => {
-    if (password.length < 8) {
-      this.setState({ errorMessage: 'Password must be at least 8 charaters' })
+  validatePasswordAndSignup = (password, context) => {
+    if (password.length < 6) {
+      this.setState({ errorMessage: 'Password must be at least 6 charaters' })
     } else {
-      this.setState({ password: password, errorMessage: null })
+      this.setState({ password: password, errorMessage: null }, () => {
+        this.signup(context)
+      })
     }
   }
 
@@ -77,7 +93,6 @@ class App extends Component {
     const {
       link,
       email,
-      errorMessage,
     } = this.state;
 
     if (link === null) {
@@ -92,6 +107,8 @@ class App extends Component {
   }
 
   render() {
+    const message = this.state.errorMessage || this.message();
+
     return (
       <AppContext.Consumer>
         {(context) => (
@@ -100,14 +117,13 @@ class App extends Component {
               <div className="row justify-content-center">
                 <MainMessage
                   ref={this.mainMessage}
-                  message={this.state.errorMessage || this.message()}
-                  isError={!!this.state.errorMessage}  
+                  message={context.state.token ? 'Success!' : message}
+                  isError={!!this.state.errorMessage}
                 />
               </div>
               <div className="row justify-content-center">
-                <MainInput onSubmit={this.submitFunction} error={'Everything is broken'} />
+                <MainInput onSubmit={(value) => this.submitFunction(context, value)} error={'Everything is broken'} />
               </div>
-              <div className="row justify-content-center"></div>
               <div className="row justify-content-center"></div>
             </div>
           </div>
