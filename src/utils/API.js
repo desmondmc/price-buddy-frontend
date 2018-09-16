@@ -24,6 +24,7 @@ const postLink = async (link) => {
   }
 
   const result = await _post('http://localhost:5000/link', linkData);
+  return result;
 }
 
 const emailAvailable = async (email) => {

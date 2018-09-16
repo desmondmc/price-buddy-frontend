@@ -13,8 +13,7 @@ class MainInput extends Component {
   }
 
   onKeyPressEnter = (event) => {
-    if(event.key == 'Enter'){
-      console.log('enter press here! ')
+    if (event.key === 'Enter') {
       this.onSubmit();
     }
   }
@@ -23,9 +22,9 @@ class MainInput extends Component {
     return (
       <div className="input-group main_input">
         <input
-          type="text"
+          type={this.props.isSecureInput ? "password" : "text"}
           className="form-control"
-          placeholder="Search for..."
+          placeholder={this.props.placeholder}
           id="main-input"
           aria-label="Search for..."
           ref={this.textInput}
