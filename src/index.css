@@ -39,3 +39,26 @@ body {
 .main_input_submit:hover{
   cursor: pointer;
 }
+
+.main_response_container{
+  max-width: 70%;
+  height: 400px;
+  overflow: scroll;
+  padding: 15px;
+  box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.main_response_container h1{
+  text-align: center;
+}
+
+.main_response_container p{
+  text-align: justify;
+}
+
+.privacy_accept_button{
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
