@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
-import Onboarding from './screens/Onboarding';
+import { AppContext } from 'Provider';
+import Onboarding from 'screens/Onboarding';
+import Home from 'screens/Home';
 
 class App extends Component {
   render() {
     return (
-      <Onboarding />
+      <AppContext.Consumer>
+        {(context) => (
+          context.state.token
+          ? <Home />
+          : <Onboarding />
+        )}
+      </AppContext.Consumer>
     );
   }
 }

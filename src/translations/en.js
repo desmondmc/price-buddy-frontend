@@ -1,4 +1,5 @@
 export default {
+  logout: 'Logout',
   ask_link: 'Paste a link of a product you\'d like to track',
   ask_email: 'With your email we can notify you when the price drops',
   ask_password: 'Great! Now you just need a password',
