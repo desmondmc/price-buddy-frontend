@@ -1,3 +1,10 @@
+let token = null;
+
+const setAuthToken = (authToken) => {
+  token = authToken;
+}
+
+
 const signup = async ({ email, password }) => {
   const userData = {
     email,
@@ -18,12 +25,19 @@ const login = async ({ email, password }) => {
   return result.auth_token
 }
 
+const getUserProducts = async () =>
+  _get('http://localhost:5000/products')
+
 const postLink = async (link) => {
   const linkData = {
     link,
   }
 
-  const result = await _post('http://localhost:5000/link', linkData);
+  const result = await _post(
+    'http://localhost:5000/link',
+    linkData,
+  );
+
   return result;
 }
 
@@ -33,25 +47,43 @@ const emailAvailable = async (email) => {
 }
 
 export {
+  // Utils
+  setAuthToken,
+
+  // POSTS
   login,
   signup,
   emailAvailable,
   postLink,
+
+  // GETS
+  getUserProducts,
 }
 
+const _get = (url) =>
+  _commonFetch('GET', url, null)
+
 const _post = (url, data) =>
+  _commonFetch('POST', url, data)
+
+const _commonFetch = (method, url, data) =>
   fetch(
     url,
     {
-      method: 'POST',
-      body: JSON.stringify(data),
+      method,
+      body: data ? JSON.stringify(data) : null,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
+        "auth-token": token,
       },
     }
   )
     .then((response) => {
-      return response.json();
+      if (response.status > 299 || response.status < 200) {
+        throw new Error('Bad response');
+      }
+
+      return response && response.json();
     })
     .then((myJson) => {
       return myJson;

@@ -155,7 +155,7 @@ export default class Onboarding extends Component {
                 }
               </div>
               <div className="row justify-content-center">
-                {this.getFlowPosition() == 'GET_PRIVACY_POLICY' && <MainPrivacy onAccept={() => this.submitFunction(context)}/>}
+                {this.getFlowPosition() === 'GET_PRIVACY_POLICY' && <MainPrivacy onAccept={() => this.submitFunction(context)}/>}
               </div>
             </div>
           </div>

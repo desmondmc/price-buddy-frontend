@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as API from 'utils/API';
 import { getCookie } from './utils/cookie'
 
 export const AppContext = React.createContext();
@@ -7,8 +8,11 @@ export default class Provider extends Component {
   constructor(props) {
     super(props)
 
+    const token = getCookie('token')
+    API.setAuthToken(token)
+
     this.state = {
-      token: getCookie('token'),
+      token,
     }
   }
   setAuthToken = (token) => {
