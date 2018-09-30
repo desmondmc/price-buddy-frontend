@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'App.css';
 import MainMessage from 'components/MainMessage';
 import MainInput from 'components/MainInput';
+import LoadingSpinner from 'components/LoadingSpinner';
 import t from 'translations';
 import MainPrivacy from 'components/MainPrivacy';
 import * as API from 'utils/API';
@@ -23,23 +24,31 @@ export default class Onboarding extends Component {
       password: null,
       acceptedPrivacy: false,
       errorMessage: null,
+      isLoading: false,
     }
   }
 
   signup = async (context) => {
+    this.setState({ isLoading: true })
     const { auth_token } = await API.signup({
       email: this.state.email,
       password: this.state.password,
     });
 
     if (!auth_token) {
-      this.setState({ errorMessage: t('try_again') });
+      this.setState({
+        errorMessage: t('try_again'),
+        isLoading: false,
+      })
       return;
     }
 
     if (auth_token) {
       setCookie('token', auth_token, 10)
+      API.setAuthToken(auth_token)
+      await API.postLink(this.state.link)
       context.setAuthToken(auth_token)
+      this.setState({ isLoading: false })
     }
   }
 
@@ -127,9 +136,12 @@ export default class Onboarding extends Component {
   }
 
   render() {
-    const message = this.state.errorMessage || this.message();
+    const { isLoading, errorMessage } = this.state;
+
+    const message = errorMessage || this.message();
     const isSecureInput = this.getFlowPosition() === 'GET_PASSWORD';
-    const showPrivacy = this.getFlowPosition() === 'GET_PRIVACY_POLICY';
+    const showPrivacy = this.getFlowPosition() === 'GET_PRIVACY_POLICY' && !isLoading;
+    const showTextInput = this.getFlowPosition() !== 'GET_PRIVACY_POLICY' && !isLoading;
 
     return (
       <AppContext.Consumer>
@@ -139,23 +151,26 @@ export default class Onboarding extends Component {
               <div className="row justify-content-center">
                 <MainMessage
                   ref={this.mainMessage}
-                  message={context.state.token ? 'Success!' : message}
-                  isError={!!this.state.errorMessage}
+                  message={isLoading ? t('account_setup') : message}
+                  isError={!!errorMessage}
                 />
               </div>
+              
               <div className="row justify-content-center">
                 {
-                  !showPrivacy &&
+                  showTextInput &&
                   <MainInput
                     placeholder={this.placeholder()}
                     onSubmit={(value) => this.submitFunction(context, value)}
                     isSecureInput={isSecureInput}
                     error={'Everything is broken'}
                   />
+                  
                 }
+                {isLoading && <LoadingSpinner />}
               </div>
               <div className="row justify-content-center">
-                {this.getFlowPosition() === 'GET_PRIVACY_POLICY' && <MainPrivacy onAccept={() => this.submitFunction(context)}/>}
+                {showPrivacy && <MainPrivacy onAccept={() => this.submitFunction(context)}/>}
               </div>
             </div>
           </div>

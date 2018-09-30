@@ -1,4 +1,5 @@
 export default {
+  account_setup: 'Setting up your account...',
   logout: 'Logout',
   ask_link: 'Paste a link of a product you\'d like to track',
   ask_email: 'With your email we can notify you when the price drops',
