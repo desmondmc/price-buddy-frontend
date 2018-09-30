@@ -4,7 +4,7 @@ import MainMessage from 'components/MainMessage';
 import MainInput from 'components/MainInput';
 import Product from 'components/Product';
 import t from 'translations';
-import { setCookie } from 'utils/cookie'
+import { clearCookies } from 'utils/cookie'
 import * as API from 'utils/API';
 import 'App.css';
 
@@ -14,7 +14,12 @@ export default class Home extends Component {
 
     this.mainMessage = React.createRef()
 
-    this.getProducts();
+    try {
+      this.getProducts();
+    } catch (_) {
+      console.log('Something failed')
+    }
+    
 
     this.state = {
       products: [],
@@ -36,7 +41,7 @@ export default class Home extends Component {
   }
 
   onLogout = (context) => {
-    setCookie('token', null, 9999)
+    clearCookies()
     context.setAuthToken(null)
   }
 

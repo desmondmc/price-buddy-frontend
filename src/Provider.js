@@ -16,6 +16,8 @@ export default class Provider extends Component {
     }
   }
   setAuthToken = (token) => {
+    API.setAuthToken(token)
+
     this.setState({
       token: token,
     })

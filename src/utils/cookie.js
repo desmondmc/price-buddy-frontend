@@ -21,7 +21,12 @@ const getCookie = key => {
   return '';
 }
 
+const clearCookies = () => {
+  document.cookie = '';
+}
+
 export {
   setCookie,
   getCookie,
+  clearCookies,
 }

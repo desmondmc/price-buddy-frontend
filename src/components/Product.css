@@ -1,5 +1,17 @@
 .product_container{
+  display: flex;
+  align-items: center;
   flex: 1;
-  padding: 10px;
   flex-direction: row;
+  padding: 10px;
+}
+
+.text_container{
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.bold{
+  font-weight: bold;
 }
