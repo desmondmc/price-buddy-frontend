@@ -6,18 +6,18 @@ export default class Product extends Component {
     const { image, name, amount, currency, url } = this.props.product
 
     return (
-      <div className="product_container">
-        <img src={image} alt={name} height="100" width="100" />
+      <a target="_blank" href={url}>
+      <div className="main_product_container">
+        <img src={image ? image : 'http://www.bnwt.webplusshop.com/stores/store_16429/media/DEFAULTPRODIMAGE-4.jpg'} alt={name} height="100" width="100" />
         <div className="text_container">
-          <a target="_blank" href={url}>
             {name}
-          </a>
           <div className="bold">
             <br></br>
             {`${amount} ${currency}`}
           </div>
         </div>
       </div>
+      </a>
     );
   }
 }

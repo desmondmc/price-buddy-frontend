@@ -67,7 +67,9 @@ export default class Home extends Component {
                   error={'Everything is broken'}
                 />
               </div>
+              <div className="main_product_group_container">
               {this.state.products.map(p => <Product product={p} />)}
+              </div>
             </div>
           </div>
         )}

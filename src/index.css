@@ -56,9 +56,18 @@ body {
   text-align: justify;
 }
 
-.privacy_accept_button{
-  width: 90%;
-  margin-left: 5%;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.privacy_button_group{
+  width:100%;
+  height: 30px;
+  margin: auto;
 }
+
+.privacy_accept_button{
+  width: 45%;
+  float:left;
+}
+
+.privacy_cancel_button{
+  width: 45%;
+  float:right;
+} 
